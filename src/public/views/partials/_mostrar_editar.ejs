@@ -1,0 +1,56 @@
+<div class="col-ms-5">
+    <div class="card">
+        <div class="card-body p-2">
+            <form action="" method="" id="submitM" enctype="multipart/form-data" >                     
+                <!--title-->
+                <div class="form-goup m-2" id="idTitle">
+                    <input type="text" name="title" id="titleM" placeholder="Insert  a Title Task" required
+                    class="form-control" value="">
+                </div>
+                <!--description-->
+                <div class="form-group m-2">
+                    <textarea class="form-control" name="description" id="descriptionM" rows="3"
+                        placeholder="Insert a Description" required></textarea>
+                </div>
+                <!--preority-->
+                <div class="well well-sm text-center  m-2">
+                    <div class="btn-group" data-toggle="buttons">
+
+                        <label class="btn btn-success active bg-success">
+                            <input type="radio" name="preority" id="option0M" autocomplete="off" checked="checked"  value="0" >
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </label>
+                        <label class="btn btn-warning">
+                            <input type="radio" name="preority" id="option1M" autocomplete="off" value="1">
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </label>
+                        <label class="btn btn-danger">
+                            <input type="radio" name="preority" id="option2M" autocomplete="off" value="2">
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </label>
+
+                    </div>
+                </div>
+                <!--fecha limite-->
+                <div class="m-2">
+                    <input class="form-control" type="date"  id="deaflineM" placeholder=" deafline"
+                        name="deafline">
+                </div>
+                <!--img-->
+                <div  class=" container">
+                    <div class=" custom-file">
+
+                        <input type="file" accept="image/png, .jpeg" class="custom-file-input" name="img"
+                            id="imgM">
+                            <label class="custom-file-label" for="inputGroupFile02">Choose image</label>
+                    </div>
+                </div>
+                <img src="" alt="" style="display: block;width: 200px;height: 200px;background-color: red;" id="MImg">
+                <!--button-->
+                <div class="m-2">
+                    <button type="submit"  class="btn btn-primary btn-block ">Edit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
