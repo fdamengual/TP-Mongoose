@@ -25,7 +25,11 @@ const TaskSchema = new Schema({
         enum: ['0', '1', '2'],
         require
     },
-    deafline: Date,
+    deafline: {
+type:String,
+default:""
+
+    },
     state: {
         type: Boolean,
         default: false,

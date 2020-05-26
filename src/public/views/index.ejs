@@ -1,16 +1,41 @@
 <%- include('partials/_header'); %>
+<style>
+    .ocultar {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
 
+    }
+
+    .mostrar {
+        position: absolute;
+        opacity: 1;
+        margin-left: 37.5%;
+        z-index: 10;
+
+    }
+
+    #image {
+        background-color: rgba(0, 0, 0, 0.8);
+        background-image: url(http://www.gelfuzion.com/img/slides/nivo/bg-1.jpg);
+        height: 500px;
+        max-width: 100%;
+        filter: brightness(0.4);
+    }
+</style>
+
+<div id='mostrar_editar' class="ocultar"> <%- include('partials/_mostrar_editar'); %> </div>
 <div class="container">
     <div class="row">
         <!-- FORM -->
         <div class="col-ms-5">
             <div class="card">
                 <div class="card-body p-2">
-                    <form action="/add" method="POST" enctype="multipart/form-data" >                     
+                    <form action="/add" method="POST" enctype="multipart/form-data">
                         <!--title-->
                         <div class="form-goup m-2" id="idTitle">
                             <input type="text" name="title" id="title" placeholder="Insert  a Title Task" required
-                            class="form-control">
+                                class="form-control">
                         </div>
                         <!--description-->
                         <div class="form-group m-2">
@@ -22,7 +47,8 @@
                             <div class="btn-group" data-toggle="buttons">
 
                                 <label class="btn btn-success active bg-success">
-                                    <input type="radio" name="preority" id="option0" autocomplete="off" checked="checked"  value="0" >
+                                    <input type="radio" name="preority" id="option0" autocomplete="off"
+                                        checked="checked" value="0">
                                     <span class="glyphicon glyphicon-ok"></span>
                                 </label>
                                 <label class="btn btn-warning">
@@ -45,7 +71,7 @@
                         <div style="width:100%" class=" container">
                             <div class=" custom-file">
 
-                                <input type="file" accept="image/png, .jpeg" class="custom-file-input" name="img"
+                                <input type="file" accept="image/png, .jpeg, .jpg" class="custom-file-input" name="img"
                                     id="img">
                                 <label class="custom-file-label" for="inputGroupFile02">Choose image</label>
                             </div>
@@ -66,29 +92,30 @@
                         <th><i class="fas fa-check-square"></i></th>
                         <th>N°</th>
                         <th>Title</th>
-                        <th>CreationDate</th>                      
+                        <th>CreationDate</th>
                         <th>Deafline</th>
                         <th>State</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <%for(var i=0; i < tasks.length; i++ ) { %>                       
+                    <%for(var i=0; i < tasks.length; i++ ) { %>
                     <tr
                         class="<%= tasks[i].preority==0 ? 'table-success':tasks[i].preority==1 ?'table-warning':'table-danger'%>">
                         <td><a style="z-index:2;position:absolute;opacity:0;" href="/check/<%= tasks[i].id%>">a</a>
                             <input type="checkbox" <%= tasks[i].state ? checked="checked" : false %>></td>
                         <th><%= i + 1  %></td>
                         <td><%= tasks[i].title  %></td>
-                        <td><%= tasks[i].creationDate.getDate()%>/<%= tasks[i].creationDate.getMonth()%>/<%= tasks[i].creationDate.getFullYear()%>
+                        <td> <%= tasks[i].creationDate.getFullYear()%>-<%= tasks[i].creationDate.getMonth()%>-<%=tasks[i].creationDate.getDate()%>
                         </td>
                         <td> <% if(tasks[i].deafline != undefined) {%>
-                            <%= tasks[i].deafline.getDate()%>/<%= tasks[i].deafline.getMonth()%>/<%= tasks[i].deafline.getFullYear()%>
+                            <%= tasks[i].deafline%>
                             <%}%>
                         </td>
                         </td>
                         <td>
-                            <div class="text-center"><a href="/delete/<%= tasks[i].id%>" class="far fa-trash-alt"></a>                     
-                            <a href="" class="fas fa-edit"></a> </div>
+                            <div class="text-center"><a href="/delete/<%= tasks[i].id%>" class="far fa-trash-alt"></a>
+                            <a href="javascript:void(0);" class="fas fa-edit"
+                                onclick="mostrar_editar('<%= tasks[i].id%>')"></a>
                             <% } %>
                 </tbody>
             </table>
@@ -101,5 +128,70 @@
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
+
+    var id;
+
+    function mostrar_editar(id) {
+
+
+        this.id= id;
+        if ($("#mostrar_editar").attr("class") == "ocultar") {
+            $("#mostrar_editar").attr("class", "row mostrar justify-content-center")
+
+        }
+        else {
+            $("#mostrar_editar").attr("class", "ocultar")
+        }
+        $.ajax({
+            url: '/traerTask/' + id,
+            method: 'GET',
+            success: function (task) {
+                const tarea = task[0]
+                $('#titleM').val(tarea.title)
+                $('#descriptionM').val(tarea.description)
+                if (tarea.preority == 0)
+                    $('#option0M').attr('checked', true)
+                else if (tarea.preority == 1)
+                    $('#option1M').attr('checked', true)
+                else
+                    $('#option0M').attr('checked', true)
+
+                    
+                if(tarea.deafline!="")
+                $('#deaflineM').val(tarea.deafline)
+              
+               // alert(tarea.img.path)
+              // $('#MImg').attr('src',tarea.img.path)
+              // alert($('#MImg').attr('src'))
+       
+            }
+        })
+
+    };
+
+    $(function(){
+        
+$('#submitM').on('submit',function(e){
+    e.preventDefault()
+    alert(id)
+
+
+$.ajax({
+
+    url:/editTask/+ this.id,
+    method: PUT,
+    success: function(response){
+        console.log(response)
+
+    }
+ 
+})
+
+
+
+})
+
+
+    })
 </script>
 <%- include('partials/_footer'); %>
