@@ -1,101 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="#" />
     <!--icons-->
+   
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <title>Document</title>
 
-    <!--  BOOSTRAP 4 CSS  -->
+    <!--  BOOSTRAP 4   -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
     <!--script-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!--JQuery 3.4.1-->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"
-        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <!-- Bootstrap JS 4.4.1-->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
-
-<!-- Plugin para ordenar tablas-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.29.0/js/jquery.tablesorter.combined.js" integrity="sha256-AQTn9CwiNvZG2zsoT0gswugjZp0alCQySLyt9brT9Cg="
-        crossorigin="anonymous"></script>
-
-
-
-
+    
+    
+    
 </head>
 
 <body>
-    <%- include('_mostrar_editar'); %>
-
     <nav class="navbar navbar-dark bg-dark mb-4">
-        <form class="form-inline">
-            <div>
-                <a href="/" class="pr-5 text-white bg-dark">
-                    <i class="fas fa-home mr-2 fa-2x" style="color: white;"></i>Home</a>
-            </div>
-
-            <div data-toggle="modal" data-target="#exampleModal">
-                <a href="javascript:void(0);" class="pr-5 text-white bg-dark" onclick="mostrar_nuevo()">
-                    <i class="fas fa-plus-square mr-2  fa-2x " style="color:#FFFFFF;"></i>Add Task</a>
-            </div>
-
-            <div data-toggle="modal" data-target="#modalList">
-                <a href="javascript:void(0);" class="pr-5 text-white bg-dark" onclick="m('addList')">
-                    <i class="fas fa-tasks mr-2 fa-2x" style="color: white;"></i>Add List</a>
-            </div>
-
-
-        </form>
+        <a href="" class="navbar-brand">Agregar</a>
     </nav>
-
-    <style>
-        .ocultar {
-            position: absolute;
-            z-index: -1;
-            opacity: 0;
-
-        }
-
-        .mostrar {
-            position: absolute;
-            opacity: 1;
-            margin-left: 37.5%;
-            z-index: 10;
-
-        }
-
-        #MImg {
-            display: block;
-            background-color: lightgray;
-            margin-left: auto;
-            margin-right: auto;
-
-            width: 80%;
-        }
-    </style>
-
-    <script>
-
-        $('#cancel').click(function () {
-
-            $('#modalList').modal('hide')
-        })
-
-        $('#cancelTask').click(function () {
-            $('#exampleModal').modal('hide')
-        })
-
-        
-    </script>

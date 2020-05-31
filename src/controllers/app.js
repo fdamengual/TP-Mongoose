@@ -23,13 +23,12 @@ app.set('port', process.env.PORT || 3000);
 app.set('views', path.resolve(__dirname + '\\..\\public', 'views'));
 app.set('view engine', 'ejs');
 
-app.use('/uploads/img', express.static(path.join(__dirname, '/../uploads/img')));
 
 //middleware
 app.use(morgan('dev'));
 app.use(express.urlencoded({}))
 const storage = multer.diskStorage({
-    destination :path.join(__dirname + '/../uploads/img'),
+    destination :path.join(__dirname + '../uploads/img'),
     filename: (req, file, cb, filename) => {
        cb(null, uuid.v4() + path.extname(file.originalname));
      
@@ -37,11 +36,11 @@ const storage = multer.diskStorage({
 })
 
 app.use(multer({ storage:storage  }).single('img'))
+app.use(express.static(path.join(__dirname , '../uploads/img')))
+app.use(express.static(path.join(__dirname, '../public')))
 
-
-//static files
-//app.use(express.static(path.join(__dirname + '/../uploads/img')))
-
+console.log(path.join(__dirname ,'../uploads/img'))
+console.log(path.join(__dirname, '../public'))
 //post
 
 app.use(bodyParser.json())
