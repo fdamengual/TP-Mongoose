@@ -1,0 +1,166 @@
+<%- include('partials/_header'); %>
+
+
+   
+   
+
+<div class="container" id="ok">
+  <div class="border  m-2 p-3 rounded">
+    <form >
+
+      <div class="form-row">
+        <div class="col-1">
+          <a data-toggle="tooltip" data-placement="top" title="Marcar lista como terminada " style="z-index:2;position:absolute;opacity:0;" href="/checkList/<%= list.id%>/listar">aa</a>
+         
+          <input  type="checkbox" <%= list.state ? checked="checked" : false  %>>
+
+        </div>
+        <div class="col">
+          <label>Title List</label>
+          <input type="text" class="form-control" placeholder="First name" value='<%= list.title%>'>
+        </div>
+        <div class="col">
+          <label>Creation Date</label>
+          <input type="text" disabled="disabled" class="form-control"
+            value='<%=  list.creationDate.getFullYear()%>-<%= list.creationDate.getMonth()%>-<%=list.creationDate.getDate()%>'>
+        </div>
+
+        <div class="col ocultar" id="resolutionDate">
+          <label>Resolution Date</label>
+          <% if(list.resolutionDate) { %>
+          <input type="text" disabled="disabled" class="form-control"
+            value='<%= list.resolutionDate%>'>
+          <% } else { %>
+          <input type="text" disabled="disabled" class="form-control" value="">
+          <% } %>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+<div class="container ">
+
+  <div>
+    <table id="tabla" class="table table-bordered table-hover ">
+      <thead class="thead-dark">
+        <tr>
+          <th><i class="fas fa-check-square"></i></th>
+          <th data-toggle="tooltip" data-placement="top" title="Ordenar por numero">N°</th>
+          <th data-toggle="tooltip" data-placement="top" title="Ordenar por titulo">Title</th>
+          <th data-toggle="tooltip" data-placement="top" title="Ordenar por prioridad">Priority</th>
+          <th data-toggle="tooltip" data-placement="top" title="Ordenar por fecha de creacion">CreationDate
+                   
+          </th>
+          <th data-toggle="tooltip" data-placement="top" title="Ordenar por fecha de conclusion">Deafline</th>
+          <th >Action</th>
+        </tr>
+      </thead>
+      <tbody id="reloadTasks">
+        <%var cont = 1%>
+        <%for(var i=0; i < tasks.length; i++ ) { %>
+        <%cont ++%>
+        <tr class="<%= tasks[i].preority==0 ? 'table-success':tasks[i].preority==1 ?'table-warning':'table-danger'%>">
+          <td><a style="z-index:2;position:absolute;opacity:0;" href="/check/<%= tasks[i].id%>/<%= list.id %>" name='viene de list'>aa</a>
+            <input type="checkbox" <%= tasks[i].state ? checked="checked" : false %>></td>
+          <td><%= i + 1  %></td>
+          <td><%= tasks[i].title  %></td>
+          <td style="text-align: center;"> <label for="" style="opacity: 0; position: absolute;"> <%= tasks[i].preority==0 ? '0':tasks[i].preority==1 ?'1':'2'%> </label><%= tasks[i].preority==0 ? 'Baja':tasks[i].preority==1 ?'Media':'Alta'%>  </td>
+          <td>
+            <%= tasks[i].creationDate.getFullYear()%>-<%= tasks[i].creationDate.getMonth()%>-<%=tasks[i].creationDate.getDate()%>
+          </td>
+          <td> <% if(tasks[i].deafline != "") {%>
+            <%= tasks[i].deafline%>
+            <%}%>
+
+          </td>
+          </td>
+          <td>
+              <div class="text-center">
+              <a href="/delete/<%= tasks[i].id%>/<%= list.id %>" class="far fa-trash-alt"></a>
+            <% if(tasks[i].state == true){%>
+            <a class="fas fa-edit" disabled="disabled" style="color:rgb(180, 176, 176);"></a>
+            <%} else{%>
+            <a href="javascript:void(0);" class="fas fa-edit" onclick="mostrar_editar('<%= tasks[i].id%>')"></a>
+            <% } %>
+            <% } %>
+           
+ 
+      </tbody>
+    </table>
+
+  </div>
+  
+
+</table>
+
+</div>
+
+<script>
+
+  var id = "";
+
+  $(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+
+
+
+  function mostrar_nuevo() {
+    $('#submitM').attr('action', '/addToList/')
+    $('#titleM').val("")
+    $('#descriptionM').val("")
+    $('#option0M').attr('checked', true)
+
+    $('#deaflineM').val("dd-mm-yyyy");
+
+    $('#MImg').attr('src', "")
+  }
+
+  function mostrar_editar(id) {
+
+    this.id = id;
+    $('#exampleModal').modal('toggle')
+    $.ajax({
+      url: '/traerTask/' + id,
+      method: 'GET',
+      success: function (task) {
+
+        var tarea = task[0]
+        $('#titleM').val(tarea.title)
+        $('#descriptionM').val(tarea.description)
+        if (tarea.preority == 0)
+          $('#option0M').attr('checked', true)
+        else if (tarea.preority == 1)
+          $('#option1M').attr('checked', true)
+        else
+          $('#option2M').attr('checked', true)
+        if (tarea.deafline != "")
+          $('#deaflineM').val(tarea.deafline);
+
+        $('#submitM').attr('action', '/editTaskList/' + id)
+
+        if (tarea.img != null) {
+          $('#MImg').attr('src', tarea.img.path)
+        }
+        else {
+          $('#MImg').attr('src', "")
+        }
+      }
+    })
+
+  };
+
+
+  $(document).ready(function() 
+    { 
+        $("#tabla").tablesorter(); 
+    } 
+);
+
+
+</script>
+
+
+
+<%- include('partials/_footer'); %>

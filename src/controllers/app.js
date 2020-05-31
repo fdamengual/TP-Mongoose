@@ -11,7 +11,9 @@ const uuid = require('uuid');
 const app = express();
 
 //connecting to db
-mongoose.connect('mongodb://localhost/tp6')
+mongoose.connect('mongodb://localhost/tp6',{
+    useNewUrlParser:true
+})
     .then(db => console.log('DB conected'))
     .catch(err => console.log(err))
 
@@ -21,12 +23,13 @@ app.set('port', process.env.PORT || 3000);
 app.set('views', path.resolve(__dirname + '\\..\\public', 'views'));
 app.set('view engine', 'ejs');
 
+app.use('/uploads/img', express.static(path.join(__dirname, '/../uploads/img')));
 
 //middleware
 app.use(morgan('dev'));
 app.use(express.urlencoded({}))
 const storage = multer.diskStorage({
-    destination :path.join(__dirname + '\\..\\uploads\\img'),
+    destination :path.join(__dirname + '/../uploads/img'),
     filename: (req, file, cb, filename) => {
        cb(null, uuid.v4() + path.extname(file.originalname));
      
@@ -35,7 +38,12 @@ const storage = multer.diskStorage({
 
 app.use(multer({ storage:storage  }).single('img'))
 
+
+//static files
+//app.use(express.static(path.join(__dirname + '/../uploads/img')))
+
 //post
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 

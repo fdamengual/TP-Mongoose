@@ -1,0 +1,77 @@
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST" id="submitM" enctype="multipart/form-data">
+                    <% if(list != null) { %>
+                    <input type="hidden" name="list_id" value="<%= list.id %>">
+                    <% } %>
+                    <!--title-->
+                    <div class="form-goup m-2" id="idTitle">
+                        <h6>Title <span class="label label-default"></span></h6>
+                        <input type="text" name="title" id="titleM" placeholder="Insert  a Title Task" required
+                            class="form-control" value="">
+                    </div>
+                    <!--description-->
+                    <div class="form-group m-2">
+                        <h6>Description<span class="label label-default"></span></h6>
+                        <textarea class="form-control" name="description" id="descriptionM" rows="3"
+                            placeholder="Insert a Description" required></textarea>
+                    </div>
+                    <!--preority-->
+                    <h6 class="m-2">Preority<span class="label label-default"></span></h6>
+                    <div class="well well-sm text-center  m-2">
+                        <div class="btn-group" data-toggle="buttons">
+
+                            <label class="btn btn-success active bg-success">
+                                <input type="radio" name="preority" id="option0M" autocomplete="off" checked="checked"
+                                    value="0">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </label>
+                            <label class="btn btn-warning">
+                                <input type="radio" name="preority" id="option1M" autocomplete="off" value="1">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </label>
+                            <label class="btn btn-danger">
+                                <input type="radio" name="preority" id="option2M" autocomplete="off" value="2">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </label>
+
+                        </div>
+                    </div>
+                    <!--fecha limite-->
+                    <div class="m-2">
+                        <h6>Deafline<span class="label label-default"></span></h6>
+                        <input class="form-control" type="date" id="deaflineM" placeholder=" deafline" name="deafline">
+                    </div>
+                    <!--img-->
+                    <div class=" container">
+                        <div class=" custom-file">
+
+                            <input type="file" accept="image/png, .jpeg" class="custom-file-input" name="img" id="imgM">
+                            <label class="custom-file-label" for="inputGroupFile02">Choose image</label>
+                        </div>
+                    </div>
+                    <div class="m-3">
+                        <h6>Image<span class="label label-default"></span></h6>
+                        <img class="img-fluid" src="" alt="" id="MImg">
+                    </div>
+
+                    <!--button-->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success btn-block m-2">Save</button>
+                        <button type="button" class="btn btn-secondary btn-block m-2" id="cancelTask">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

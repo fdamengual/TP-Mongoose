@@ -1,28 +1,48 @@
 <%- include('partials/_header'); %>
 
-<div class="container">
-    <div class="row">
+
+
+
+<div class="container ">
+    <div>
+
         <!-- FORM -->
-        <div class="col-ms-5">
+
+        <%- include('partials/_addList'); %>
+
+        <!--agregar tarea-->
+        <div class="ocultar" id="addTask">
             <div class="card">
                 <div class="card-body p-2">
-                    <form action="/add" method="POST" enctype="multipart/form-data" >                     
+                    <div class="row">
+                        <div class="col">
+                            <span class="float-right">
+                                <button type="button" class="btn btn-outline-dark">X</button></span>
+                        </div>
+                    </div>
+                    <form action="/add" method="POST" enctype="multipart/form-data">
                         <!--title-->
+
                         <div class="form-goup m-2" id="idTitle">
+                            <h6>Title <span class="label label-default"></span></h6>
                             <input type="text" name="title" id="title" placeholder="Insert  a Title Task" required
-                            class="form-control">
+                                class="form-control">
                         </div>
                         <!--description-->
                         <div class="form-group m-2">
+                            <h6>Description<span class="label label-default"></span></h6>
                             <textarea class="form-control" name="description" id="description" rows="3"
                                 placeholder="Insert a Description" required></textarea>
                         </div>
                         <!--preority-->
+                        <h6 class="m-2">Preority<span class="label label-default"></span></h6>
                         <div class="well well-sm text-center  m-2">
+
                             <div class="btn-group" data-toggle="buttons">
 
                                 <label class="btn btn-success active bg-success">
-                                    <input type="radio" name="preority" id="option0" autocomplete="off" checked="checked"  value="0" >
+                                    <input type="radio" name="preority" id="option0" autocomplete="off"
+                                        checked="checked" value="0">
                                     <span class="glyphicon glyphicon-ok"></span>
                                 </label>
                                 <label class="btn btn-warning">
@@ -38,6 +58,7 @@
                         </div>
                         <!--fecha limite-->
                         <div class="m-2">
+                            <h6>Deafline<span class="label label-default"></span></h6>
                             <input class="form-control" type="date" id=" deafline" placeholder=" deafline"
                                 name="deafline">
                         </div>
@@ -45,61 +66,158 @@
                         <div style="width:100%" class=" container">
                             <div class=" custom-file">
 
-                                <input type="file" accept="image/png, .jpeg" class="custom-file-input" name="img"
+                                <input type="file" accept="image/png, .jpeg, .jpg" class="custom-file-input" name="img"
                                     id="img">
                                 <label class="custom-file-label" for="inputGroupFile02">Choose image</label>
                             </div>
                         </div>
                         <!--button-->
                         <div class="m-2">
-                            <button type="submit" class="btn btn-primary btn-block ">Add</button>
+                            <button type="submit" class="btn btn-primary btn-block">Add</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-7 ">
-            <table class="table table-bordered table-hover ">
+        <div>
+            <table id="table" class="table table-bordered table-hover ">
                 <thead class="thead-dark">
                     <tr>
                         <th><i class="fas fa-check-square"></i></th>
-                        <th>N°</th>
-                        <th>Title</th>
-                        <th>CreationDate</th>                      
-                        <th>Deafline</th>
-                        <th>State</th>
+                        <th data-toggle="tooltip" data-placement="top" title="Ordenar por numero">N°</th>
+                        <th data-toggle="tooltip" data-placement="top" title="Ordenar por titulo">Title</th>
+                        <th data-toggle="tooltip" data-placement="top" title="Ordenar por prioridad">Priority</th>
+                        <th data-toggle="tooltip" data-placement="top" title="Ordenar por fecha de creacion">CreationDate
+                                 
+                        </th>
+                        <th data-toggle="tooltip" data-placement="top" title="Ordenar por fecha de conclusion">Deafline</th>
+                        <th >Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <%for(var i=0; i < tasks.length; i++ ) { %>                       
-                    <tr
-                        class="<%= tasks[i].preority==0 ? 'table-success':tasks[i].preority==1 ?'table-warning':'table-danger'%>">
-                        <td><a style="z-index:2;position:absolute;opacity:0;" href="/check/<%= tasks[i].id%>">a</a>
-                            <input type="checkbox" <%= tasks[i].state ? checked="checked" : false %>></td>
-                        <th><%= i + 1  %></td>
-                        <td><%= tasks[i].title  %></td>
-                        <td><%= tasks[i].creationDate.getDate()%>/<%= tasks[i].creationDate.getMonth()%>/<%= tasks[i].creationDate.getFullYear()%>
+                    <%var cont = 1%>
+                    <%for(var i=0; i < tasks.length; i++ ) { %>
+                    <%cont ++%>
+                    <tr class="<%= tasks[i].preority==0 ? 'table-success':tasks[i].preority==1 ?'table-warning':'table-danger'%>">
+                      <td><a data-toggle="tooltip" data-placement="top" title="Marcar tarea como concluida" style="z-index:2;position:absolute;opacity:0;" href="/check/<%= tasks[i].id%>/nada" name='viene de list'>aa</a>
+                        <input type="checkbox" <%= tasks[i].state ? checked="checked"  : false  %> ></td>
+                      <td><%= i + 1  %></td>
+                      <td><%= tasks[i].title  %></td>
+                      <td style="text-align: center;"> <label for="" style="opacity: 0; position: absolute;"> <%= tasks[i].preority==0 ? '0':tasks[i].preority==1 ?'1':'2'%> </label><%= tasks[i].preority==0 ? 'Baja':tasks[i].preority==1 ?'Media':'Alta'%>  </td>
+                      <td>
+                        <%= tasks[i].creationDate.getFullYear()%>-<%= tasks[i].creationDate.getMonth()+1%>-<%=tasks[i].creationDate.getDate()%>
+                      </td>
+                      <td> <% if(tasks[i].deafline != undefined) {%>
+                        <%= tasks[i].deafline%>
+                        <%}%>
+                      </td>
+                      </td>
+                      <td>
+                          <div class="text-center">
+                          <a href="/delete/<%= tasks[i].id%>/nada" class="far fa-trash-alt" data-toggle="tooltip" data-placement="top" title="Eliminar"></a>
+                        <% if(tasks[i].state == true){%>
+                        <a class="fas fa-edit" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Editar" style="color:rgb(180, 176, 176);"></a>
+                        <%} else{%>
+                        <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="Editar" class="fas fa-edit" onclick="mostrar_editar('<%= tasks[i].id%>')"></a>
+                        <% } %>
+                        <% } %>
+                            <!--LISTAS-->
+                            <%for(var i=0; i < list.length; i++ ) { %>
+                    <tr>
+                        <td><a data-toggle="tooltip" data-placement="top" title="Marcar lista como terminada " style="z-index:2;position:absolute;opacity:0;" href="/checkList/<%= list[i].id%>/home">aa</a>
+                            <input type="checkbox" <%= list[i].state ? checked="checked" : false %>></td>
+
+                        <th><%= cont %></td>
+                            <%cont ++%>
+                        <td><%= list[i].title  %></td>
+                        <td style="text-align: center;"></td>
+                        <td> <%= list[i].creationDate.getFullYear()%>-<%= list[i].creationDate.getMonth()+1%>-<%=list[i].creationDate.getDate()%>
                         </td>
-                        <td> <% if(tasks[i].deafline != undefined) {%>
-                            <%= tasks[i].deafline.getDate()%>/<%= tasks[i].deafline.getMonth()%>/<%= tasks[i].deafline.getFullYear()%>
-                            <%}%>
-                        </td>
+                        <td> <%= list[i].resolutionDate%> </td>
                         </td>
                         <td>
-                            <div class="text-center"><a href="/delete/<%= tasks[i].id%>" class="far fa-trash-alt"></a>                     
-                            <a href="" class="fas fa-edit"></a> </div>
-                            <% } %>
+                            <div class="text-center">
+                                <% if(list[i].task == null){%>
+                                <a href="/deleteList/<%= list[i].id%>" class="far fa-trash-alt"data-toggle="tooltip" data-placement="top" title="Eliminar"></a>
+                                <%} else{%>
+                                <a class="far fa-trash-alt" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Editar" style="color:rgb(180, 176, 176);"></a>
+                                <% } %>
+
+                                <a href="/list/<%= list[i].id %>"data-toggle="tooltip" data-placement="top" title="Ver más..."><i class="fas fa-ellipsis-h"></i></a>
+                                <% } %>
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>
+
+
 <script>
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function () {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
+    $(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+    var id;
+    $(document).ready(function() 
+    { 
+        $("#table").tablesorter(); 
+    } 
+);
+    function mostrar_nuevo() {
+        $('#submitM').attr('action', '/add/')
+        $('#titleM').val("")
+        $('#descriptionM').val("")
+        $('#option0M').attr('checked', true)
+
+        $('#deaflineM').val("dd-mm-yyyy");
+
+        $('#MImg').attr('src', "")
+    }
+
+    function mostrar_editar(id) {
+
+        this.id = id;
+        $('#exampleModal').modal('toggle')
+        $.ajax({
+            url: '/traerTask/' + id,
+            method: 'GET',
+            success: function (task) {
+
+                var tarea = task[0]
+                $('#titleM').val(tarea.title)
+                $('#descriptionM').val(tarea.description)
+                if (tarea.preority == 0)
+                    $('#option0M').attr('checked', true)
+                else if (tarea.preority == 1)
+                    $('#option1M').attr('checked', true)
+                else
+                    $('#option2M').attr('checked', true)
+
+                if (tarea.deafline != "")
+                    $('#deaflineM').val(tarea.deafline);
+
+                $('#submitM').attr('action', '/editTask/' + id)
+
+                if (tarea.img != null) {
+                    $('#MImg').attr('src', tarea.img.path)
+                }
+                else {
+                    $('#MImg').attr('src', "")
+                }
+
+
+            }
+        })
+
+    };
+
+
+
+
 </script>
 <%- include('partials/_footer'); %>

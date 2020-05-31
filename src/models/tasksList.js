@@ -1,24 +1,24 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const TaskListSchema = new schema({
+const TaskListSchema = new Schema({
     title: { type: String, require },
     creationDate: {
         type: Date,
-        default: Date.now,
+        default: new Date(new Date() - 3600 * 1000 * 3).toISOString(),
         require
     },
     resolutionDate: {
-        type: Date,
+        type: String,
+        default: '-',
         require
     },
     state: {
         type: Boolean,
         default: false,
         require
-    },
-    tasks:{type: Schema.ObjectId, ref: 'tasks'}
+    }
 
 });
 
-module.exports = mongoose.model('listTasks',TaskListSchema);
+module.exports = mongoose.model('listTasks', TaskListSchema);
