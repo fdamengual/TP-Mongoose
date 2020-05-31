@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const TaskSchema = new Schema({
     title: {
-        type: String, required: [true, 'title cannot be blank'],
+        type: String, validate: /\S+/, required: [true, 'title cannot be blank'],
 
     },
     creationDate: {
@@ -17,7 +17,8 @@ const TaskSchema = new Schema({
     },
     description: {
         type: String,
-        require
+        require,
+        validate: /\S+/
     },
     preority: {
         type: String,
@@ -26,8 +27,8 @@ const TaskSchema = new Schema({
         require
     },
     deafline: {
-type:String,
-default:""
+        type: String,
+        default: ""
 
     },
     state: {
@@ -40,6 +41,10 @@ default:""
         path: { type: String },
         originalname: { type: String },
         mimetype: { type: String }
+    },
+    listId:
+    {
+     type: String, default: ""
     }
 });
 
