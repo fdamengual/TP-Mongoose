@@ -3,13 +3,17 @@ const router = express.Router();
 const moment = require('moment')
 const jwt = require('jsonwebtoken')
 const config = require('../models/congif')
+<<<<<<< HEAD
 const verifyToken = require('../middleware/verifyToken')
+=======
+>>>>>>> 5e04161... Modelo Usuario agregado
 let taskShow = null;
 const list = null;
 const Task = require('../models/tasks')
 const List = require('../models/tasksList')
 const User = require('../models/user')
 
+<<<<<<< HEAD
 router.get('/', verifyToken, async (req, res) => {
     var user;
     if (req.userId) user = await User.findById(req.userId);
@@ -31,6 +35,20 @@ router.get('/login', verifyToken, (req, res) => {
     res.render('login')
 })
 router.get('/register', verifyToken, (req, res) => {
+=======
+router.get('/', async (req, res) => {
+    console.log("hice la llegacion aqui buen señor de las praderas navideñas")
+    console.log(req.headers)
+    res.render('login')
+});
+
+
+router.get('/login', (req, res) => {
+
+    res.render('login')
+})
+router.get('/register', (req, res) => {
+>>>>>>> 5e04161... Modelo Usuario agregado
 
     res.render('register')
 })
@@ -57,6 +75,18 @@ router.post('/add', verifyToken, async (req, res) => {
             });
         res.redirect('/')
     }
+<<<<<<< HEAD
+=======
+
+    if (req.body.deafline != '')
+        task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
+    await task.save()
+        .then(() => console.log("Tarea cargada"))
+        .catch(err => {
+            const mess = (`${err['message']}`)
+        });
+    res.redirect('/')
+>>>>>>> 5e04161... Modelo Usuario agregado
 });
 
 //A task in a list.
@@ -250,6 +280,53 @@ router.post('/login', verifyToken, async (req, res) => {
     else console.log("No hay datos ingresados.")
     return res.redirect('/login')
 })
+
+router.post('/login', async (req, res) => {
+
+
+    const user = User.find({  })
+    
+
+    const tasks = await Task.find({ listId: "" })
+    const list = await List.find()
+
+    res.setHeader('x-access-token', res.get('x-access-token'))
+
+    console.log(req.headers['x-access-token'])
+
+    res.render('index', { tasks, list })
+})
+
+
+router.post('/register/', async (req, res, next) => {
+    const { email, password, name } = req.body
+    const user = await User.findOne({ email: email })
+    if (!user) {
+        console.log("Este usuario ya se encuentra registrado.")
+    }
+    else {
+        user = new User({
+            name,
+            email,
+            password
+        })
+        
+
+        user.password = await user.encryptPassword(user.password)
+        console.log(user)
+        await user.save()
+        const token = jwt.sign({ id: user._id }, config.secret, {
+            expiresIn: 60 * 60 * 24
+        })
+     
+        res.set('x-access-token', token)
+        res.render('login', { auth: true, token })
+    }
+
+
+
+})
+
 
 
 router.post('/register/', async (req, res, next) => {
