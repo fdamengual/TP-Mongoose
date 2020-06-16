@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="#" />
@@ -37,65 +38,4 @@
 </head>
 
 <body>
-    <%- include('_mostrar_editar'); %>
-
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <form class="form-inline">
-            <div>
-                <a href="/" class="pr-5 text-white bg-dark">
-                    <i class="fas fa-home mr-2 fa-2x" style="color: white;"></i>Home</a>
-            </div>
-
-            <div data-toggle="modal" data-target="#exampleModal">
-                <a href="javascript:void(0);" class="pr-5 text-white bg-dark" onclick="mostrar_nuevo()">
-                    <i class="fas fa-plus-square mr-2  fa-2x " style="color:#FFFFFF;"></i>Add Task</a>
-            </div>
-
-            <div data-toggle="modal" data-target="#modalList">
-                <a href="javascript:void(0);" class="pr-5 text-white bg-dark" onclick="m('addList')">
-                    <i class="fas fa-tasks mr-2 fa-2x" style="color: white;"></i>Add List</a>
-            </div>
-
-
-        </form>
-    </nav>
-
-    <style>
-        .ocultar {
-            position: absolute;
-            z-index: -1;
-            opacity: 0;
-
-        }
-
-        .mostrar {
-            position: absolute;
-            opacity: 1;
-            margin-left: 37.5%;
-            z-index: 10;
-
-        }
-
-        #MImg {
-            display: block;
-            background-color: lightgray;
-            margin-left: auto;
-            margin-right: auto;
-
-            width: 80%;
-        }
-    </style>
-
-    <script>
-
-        $('#cancel').click(function () {
-
-            $('#modalList').modal('hide')
-        })
-
-        $('#cancelTask').click(function () {
-            $('#exampleModal').modal('hide')
-        })
-
-        
-    </script>
+  

@@ -12,7 +12,8 @@ const app = express();
 
 //connecting to db
 mongoose.connect('mongodb://localhost/tp6',{
-    useNewUrlParser:true
+    useNewUrlParser:true,
+    useUnifiedTopology:true
 })
     .then(db => console.log('DB conected'))
     .catch(err => console.log(err))
@@ -38,6 +39,13 @@ const storage = multer.diskStorage({
 
 app.use(multer({ storage:storage  }).single('img'))
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
 
 //static files
 //app.use(express.static(path.join(__dirname + '/../uploads/img')))
@@ -48,6 +56,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 //routes
+
 app.use('/', router)
 
 //starting the server

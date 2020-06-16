@@ -1,0 +1,45 @@
+<%- include('partials/_header'); %>
+
+
+<div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="LoginModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="LoginModalLabel">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+             
+                <form action="/login" method="POST" id="submit" enctype="multipart/form-data">
+
+                    <!--title-->
+                    <div class="form-goup m-2" id="idEmail">
+                        <h6>Email <span class="label label-default"></span></h6>
+                        <input type="text" name="email" id="email" placeholder="Insert your email" required
+                            class="form-control" value="">
+                    </div>
+                    <!--password-->
+                    <div class="form-goup m-2" id="idPassword">
+                        <h6>Password <span class="label label-default"></span></h6>
+                        <input type="password" name="password" id="password" placeholder="Insert your password" required
+                            class="form-control" value="">
+                    </div>
+                    <!--button-->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success btn-block m-2">Login</button>
+
+                        <a href="/register" class="btn btn-secondary btn-block m-2"  id="Register">Register</a>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$('#LoginModal').modal('toggle')
+</script>
+<%- include('partials/_footer'); %>

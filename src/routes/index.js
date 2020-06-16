@@ -1,19 +1,29 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment')
-
+const jwt = require('jsonwebtoken')
+const config = require('../models/congif')
 let taskShow = null;
-const list=null;
+const list = null;
 const Task = require('../models/tasks')
 const List = require('../models/tasksList')
+const User = require('../models/user')
 
 router.get('/', async (req, res) => {
-  const  tasks = await Task.find({listId: ""})
- const   list = await List.find()
-    
-    res.render('index', { tasks, list })
+    console.log("hice la llegacion aqui buen señor de las praderas navideñas")
+    console.log(req.headers)
+    res.render('login')
 });
 
+
+router.get('/login', (req, res) => {
+
+    res.render('login')
+})
+router.get('/register', (req, res) => {
+
+    res.render('register')
+})
 
 //task
 router.post('/add', async (req, res) => {
@@ -23,9 +33,9 @@ router.post('/add', async (req, res) => {
         task.img = req.file
         task.img.path = '/uploads/img/' + req.file.filename;
     }
-  
-    if(req.body.deafline!='')
-    task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
+
+    if (req.body.deafline != '')
+        task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
     await task.save()
         .then(() => console.log("Tarea cargada"))
         .catch(err => {
@@ -38,7 +48,7 @@ router.post('/add', async (req, res) => {
 router.post('/addToList/', async (req, res) => {
 
     const list = await List.findById(req.body.list_id);
-    list.state=false;
+    list.state = false;
     await list.save()
     if (list != null) {
         const task = new Task(req.body)
@@ -47,9 +57,9 @@ router.post('/addToList/', async (req, res) => {
             task.img.path = '/uploads/img/' + req.file.filename;
         }
         task.listId = list.id;
-        if(req.body.deafline!='')
-        task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
-     
+        if (req.body.deafline != '')
+            task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
+
         await task.save()
             .then(() => console.log("A task in a list"))
             .catch(err => {
@@ -65,7 +75,7 @@ router.post('/addList/', async (req, res) => {
     const list = new List(req.body)
     list.title = req.body.title;
     list.creationDate = moment(new Date).format('YYYY-MM-DD').toString()
-    list.state= false
+    list.state = false
     await list.save()
         .then(() => console.log("LISTA cargada"))
         .catch(err => {
@@ -81,22 +91,22 @@ router.post('/addList/', async (req, res) => {
 router.get('/check/:id/:idlist', async (req, res) => {
     const { id } = req.params;
     const task1 = await Task.findById(id);
-    const {idlist}= req.params
-       
+    const { idlist } = req.params
+
     if (!(task1.state)) {
-        task1.state = true    
+        task1.state = true
         const res = moment.utc().format('YYYY-MM-DD HH:mm:ss')
         task1.resolutionDate = res.toString()
         await task1.save();
-    }    
+    }
 
-    if(idlist!= "nada"){
+    if (idlist != "nada") {
         const tasks = await Task.find({ listId: idlist })
         const list = await List.findById(idlist);
         res.render('list', { tasks, list })
     }
     else
-    res.redirect('/');
+        res.redirect('/');
 })
 
 //list
@@ -112,46 +122,46 @@ router.get('/list/:id', async (req, res) => {
 router.get('/checkList/:id/:action', async (req, res) => {
     const { id } = req.params;
     const list = await List.findById(id);
-    const {action} = req.params
+    const { action } = req.params
 
-    if (list.state == false) {       
+    if (list.state == false) {
         list.state = true
         const res = moment.utc().format('YYYY-MM-DD HH:mm:ss')
         list.resolutionDate = res.toString()
     }
     else {
         list.state = true
-        list.state = false       
+        list.state = false
         list.resolutionDate = "-"
     }
     await list.save();
 
     res.redirect('/')
- 
+
 })
 
 //task
 router.get('/delete/:id/:idlist', async (req, res) => {
     const { id } = req.params;
-    const {idlist}= req.params;
-    
+    const { idlist } = req.params;
+
     await Task.deleteOne({ _id: id })
-   
-    if(idlist!='nada'){
-        const list = await List.findById({_id:idlist});
+
+    if (idlist != 'nada') {
+        const list = await List.findById({ _id: idlist });
         const tasks = await Task.find({ listId: idlist })
         res.render('list', { tasks, list })
     }
-else{
-    res.redirect('/')
-}
+    else {
+        res.redirect('/')
+    }
 })
 
 //list
 router.get('/deleteList/:id', async (req, res) => {
     const { id } = req.params;
     await List.deleteOne({ _id: id })
-    await Task.deleteMany({listId:id})
+    await Task.deleteMany({ listId: id })
     res.redirect('/')
 
 })
@@ -160,7 +170,7 @@ router.get('/deleteList/:id', async (req, res) => {
 router.get('/traerTask/:id', async (req, res) => {
     const { id } = req.params;
 
-   const taskShow = await Task.find({ _id: id })
+    const taskShow = await Task.find({ _id: id })
     res.json(taskShow)
 
 
@@ -186,20 +196,67 @@ router.post('/editTaskList/:id', async (req, res, next) => {
             const resolutionDat = moment.utc().format('YYYY-MM-DD HH:mm:ss').toString()
             await Task.update({ _id: id }, req.body);
 
-           
+
             res.redirect('/list/' + list.id);
         }
     }
     else res.redirect('/');
 })
 
-router.get('/orderByCreationDate/:id',async(req,res)=>{
-    const {id}= req.params
+router.get('/orderByCreationDate/:id', async (req, res) => {
+    const { id } = req.params
     const list = await List.findById(id);
-  const  tasks= await Task.find({listId:id}).sort({creationDate:-1})
+    const tasks = await Task.find({ listId: id }).sort({ creationDate: -1 })
     res.json(tasks)
 
 })
+
+router.post('/login', async (req, res) => {
+
+
+    const user = User.find({  })
+    
+
+    const tasks = await Task.find({ listId: "" })
+    const list = await List.find()
+
+    res.setHeader('x-access-token', res.get('x-access-token'))
+
+    console.log(req.headers['x-access-token'])
+
+    res.render('index', { tasks, list })
+})
+
+
+router.post('/register/', async (req, res, next) => {
+    const { email, password, name } = req.body
+    const user = await User.findOne({ email: email })
+    if (!user) {
+        console.log("Este usuario ya se encuentra registrado.")
+    }
+    else {
+        user = new User({
+            name,
+            email,
+            password
+        })
+        
+
+        user.password = await user.encryptPassword(user.password)
+        console.log(user)
+        await user.save()
+        const token = jwt.sign({ id: user._id }, config.secret, {
+            expiresIn: 60 * 60 * 24
+        })
+     
+        res.set('x-access-token', token)
+        res.render('login', { auth: true, token })
+    }
+
+
+
+})
+
 
 
 module.exports = router;
