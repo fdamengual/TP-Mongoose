@@ -40,6 +40,7 @@ var get_cookies = function (request) {
 
 
 module.exports = verifyToken;module.exports = verifyToken;
+module.exports = verifyToken;
 =======
 function verifyToken(password){
     
