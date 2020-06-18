@@ -15,4 +15,9 @@ console.log(hash)
 return hash
 }
 
+userSchema.methods.verifyPassword = function (password, hash)
+{
+    return bcrypt.compare(password, this.password)
+}
+
 module.exports= mongoose.model('User',userSchema);

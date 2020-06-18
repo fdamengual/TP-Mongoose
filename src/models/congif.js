@@ -1,3 +1,3 @@
 module.exports= {
-    secret: 'miprimertoken'
+    secret: 'sekrettokenapp15987'
 }

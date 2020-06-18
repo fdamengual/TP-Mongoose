@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const router = require(path.resolve(__dirname + '\\..\\', 'routes'))
 const multer = require('multer')
 const uuid = require('uuid');
+const cookieParser = require('cookie-parser');
 
 
 const app = express();
@@ -64,6 +65,7 @@ app.listen(app.get('port'), () => {
     console.log(`Server en el puerto ${app.get('port')}`);
 });
 
+app.use(cookieParser());
 
 
 

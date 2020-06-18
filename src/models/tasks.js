@@ -45,7 +45,8 @@ const TaskSchema = new Schema({
     listId:
     {
      type: String, default: ""
-    }
+    },
+    user:{type: Schema.Types.ObjectId, ref: 'User'}
 });
 
 module.exports = mongoose.model('tasks', TaskSchema)

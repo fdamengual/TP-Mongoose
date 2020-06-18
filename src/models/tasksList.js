@@ -17,7 +17,8 @@ const TaskListSchema = new Schema({
         type: Boolean,
         default: false,
         require
-    }
+    },
+    user:{type: Schema.Types.ObjectId, ref: 'User'}
 
 });
 
