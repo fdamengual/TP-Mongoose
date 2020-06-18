@@ -1,54 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment')
-<<<<<<< HEAD
-const jwt = require('jsonwebtoken')
-const config = require('../models/congif')
-<<<<<<< HEAD
-const verifyToken = require('../middleware/verifyToken')
-=======
 
->>>>>>> parent of 5e04161... Modelo Usuario agregado
-=======
->>>>>>> parent of 05af4bd... Token login
 let taskShow = null;
 const list=null;
 const Task = require('../models/tasks')
 const List = require('../models/tasksList')
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-router.get('/', verifyToken, async (req, res) => {
-    var user;
-    if (req.userId) user = await User.findById(req.userId);
-    if (!user) {
-        res.clearCookie("x-access-token")
-        return res.redirect('/login')
-    }
-    else {        
-        var tasks = await Task.find({user: user});
-        var list = await List.find({user: user});
-        return res.render('index', { tasks, list })
-    }
-=======
-router.get('/', async (req, res) => {
-    console.log("hice la llegacion aqui buen seÃ±or de las praderas navideÃ±as")
-    console.log(req.headers)
-    res.render('login')
->>>>>>> parent of 05af4bd... Token login
-});
-
-
-router.get('/login', (req, res) => {
-
-    res.render('login')
-})
-router.get('/register', (req, res) => {
-
-    res.render('register')
-})
-
-=======
 router.get('/', async (req, res) => {
   const  tasks = await Task.find({listId: ""})
  const   list = await List.find()
@@ -57,31 +15,9 @@ router.get('/', async (req, res) => {
 });
 
 
->>>>>>> parent of 5e04161... Modelo Usuario agregado
 //task
-<<<<<<< HEAD
-router.post('/add', verifyToken, async (req, res) => {
-
-<<<<<<< HEAD
-    var user;
-    if (req.userId) user = await User.findById(req.userId);
-    if (user) {
-        const task = new Task(req.body)
-        if (req.file != null) {
-            task.img = req.file
-            task.img.path = '/uploads/img/' + req.file.filename;
-        }
-=======
 router.post('/add', async (req, res) => {
->>>>>>> parent of 05af4bd... Token login
 
-    const task = new Task(req.body)
-    if (req.file != null) {
-        task.img = req.file
-        task.img.path = '/uploads/img/' + req.file.filename;
-    }
-<<<<<<< HEAD
-=======
     const task = new Task(req.body)
     if (req.file != null) {
         task.img = req.file
@@ -90,21 +26,12 @@ router.post('/add', async (req, res) => {
   
     if(req.body.deafline!='')
     task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
-=======
-
-    if (req.body.deafline != '')
-        task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
->>>>>>> parent of 05af4bd... Token login
     await task.save()
         .then(() => console.log("Tarea cargada"))
         .catch(err => {
             const mess = (`${err['message']}`)
         });
     res.redirect('/')
-<<<<<<< HEAD
->>>>>>> parent of 5e04161... Modelo Usuario agregado
-=======
->>>>>>> parent of 05af4bd... Token login
 });
 
 //A task in a list.
@@ -274,82 +201,5 @@ router.get('/orderByCreationDate/:id',async(req,res)=>{
 
 })
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-router.post('/login', verifyToken, async (req, res) => {
-    const { email, password } = req.body
-
-    if (email && password) {
-        var user = await User.findOne({ email: email })
-        if (user) {
-            if (user.verifyPassword(password)) {
-                const token = jwt.sign({ id: user._id }, config.secret, {
-                    expiresIn: 60 * 60 * 24
-                })
-                console.log(new Date(), ' token creado. ' + token + " user: " + user.name);
-
-                res.cookie('x-access-token', token)
-
-                var tasks = await Task.find({user: user});
-                var list = await List.find({user: user});
-                return res.render('index', { tasks, list })
-            }
-            else console.log("Contraseña incorrecta.")
-        }
-        else console.log("No se encontró ningún usuario con ese correo.");
-    }
-    else console.log("No hay datos ingresados.")
-    return res.redirect('/login')
-=======
-router.post('/login', async (req, res) => {
-
-
-    const user = User.find({  })
-    
-
-    const tasks = await Task.find({ listId: "" })
-    const list = await List.find()
-
-    res.setHeader('x-access-token', res.get('x-access-token'))
-
-    console.log(req.headers['x-access-token'])
-
-    res.render('index', { tasks, list })
->>>>>>> parent of 05af4bd... Token login
-})
-
-
-router.post('/register/', async (req, res, next) => {
-    const { email, password, name } = req.body
-    const user = await User.findOne({ email: email })
-    if (!user) {
-        console.log("Este usuario ya se encuentra registrado.")
-    }
-    else {
-        user = new User({
-            name,
-            email,
-            password
-        })
-        
-
-        user.password = await user.encryptPassword(user.password)
-        console.log(user)
-        await user.save()
-        const token = jwt.sign({ id: user._id }, config.secret, {
-            expiresIn: 60 * 60 * 24
-        })
-     
-        res.set('x-access-token', token)
-        res.render('login', { auth: true, token })
-    }
-
-
-
-})
-
-
-=======
->>>>>>> parent of 5e04161... Modelo Usuario agregado
 
 module.exports = router;
