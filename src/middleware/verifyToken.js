@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const jwt = require('jsonwebtoken')
 const config = require('../models/congif')
 const cookieParser = require("cookie-parser");
@@ -41,8 +40,3 @@ var get_cookies = function (request) {
 
 module.exports = verifyToken;module.exports = verifyToken;
 module.exports = verifyToken;
-=======
-function verifyToken(password){
-    
-}
->>>>>>> 5e04161... Modelo Usuario agregado

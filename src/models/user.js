@@ -15,12 +15,9 @@ console.log(hash)
 return hash
 }
 
-<<<<<<< HEAD
 userSchema.methods.verifyPassword = function (password, hash)
 {
     return bcrypt.compare(password, this.password)
 }
 
-=======
->>>>>>> 5e04161... Modelo Usuario agregado
 module.exports= mongoose.model('User',userSchema);

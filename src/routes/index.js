@@ -3,17 +3,13 @@ const router = express.Router();
 const moment = require('moment')
 const jwt = require('jsonwebtoken')
 const config = require('../models/congif')
-<<<<<<< HEAD
 const verifyToken = require('../middleware/verifyToken')
-=======
->>>>>>> 5e04161... Modelo Usuario agregado
 let taskShow = null;
 const list = null;
 const Task = require('../models/tasks')
 const List = require('../models/tasksList')
 const User = require('../models/user')
 
-<<<<<<< HEAD
 router.get('/', verifyToken, async (req, res) => {
     var user;
     if (req.userId) user = await User.findById(req.userId);
@@ -35,20 +31,6 @@ router.get('/login', verifyToken, (req, res) => {
     res.render('login')
 })
 router.get('/register', verifyToken, (req, res) => {
-=======
-router.get('/', async (req, res) => {
-    console.log("hice la llegacion aqui buen señor de las praderas navideñas")
-    console.log(req.headers)
-    res.render('login')
-});
-
-
-router.get('/login', (req, res) => {
-
-    res.render('login')
-})
-router.get('/register', (req, res) => {
->>>>>>> 5e04161... Modelo Usuario agregado
 
     res.render('register')
 })
@@ -75,8 +57,6 @@ router.post('/add', verifyToken, async (req, res) => {
             });
         res.redirect('/')
     }
-<<<<<<< HEAD
-=======
 
     if (req.body.deafline != '')
         task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
@@ -86,7 +66,6 @@ router.post('/add', verifyToken, async (req, res) => {
             const mess = (`${err['message']}`)
         });
     res.redirect('/')
->>>>>>> 5e04161... Modelo Usuario agregado
 });
 
 //A task in a list.
