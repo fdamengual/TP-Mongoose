@@ -8,58 +8,39 @@ let taskShow = null;
 const list = null;
 const Task = require('../models/tasks')
 const List = require('../models/tasksList')
-const User = require('../models/user')
+const User = require('../models/user');
+
+
 
 router.get('/', verifyToken, async (req, res) => {
-    var user;
-    if (req.userId) user = await User.findById(req.userId);
-    if (!user) {
-        res.clearCookie("x-access-token")
-        return res.redirect('/login')
-    }
-    else {        
-        var tasks = await Task.find({user: user});
-        var list = await List.find({user: user});
-        return res.render('index', { tasks, list })
-    }
+    var user = verifyToken.getUser();
+    var tasks = await Task.find({ user: user }).catch(showErrors);
+    var list = await List.find({ user: user }).catch(showErrors);
+
+    return res.render('index', { tasks, list })
 });
 
 
 router.get('/login', verifyToken, (req, res) => {
-    if (req.userId) console.log("user_id: " + req.userId)
-    else console.log("user_id: null")
-    res.render('login')
+    var message = ""
+    res.render('login', { message })
 })
-router.get('/register', verifyToken, (req, res) => {
-
+router.get('/register', (req, res) => {
     res.render('register')
 })
 
 //task
 router.post('/add', verifyToken, async (req, res) => {
-
-    var user;
-    if (req.userId) user = await User.findById(req.userId);
-    if (user) {
-        const task = new Task(req.body)
-        if (req.file != null) {
-            task.img = req.file
-            task.img.path = '/uploads/img/' + req.file.filename;
-        }
-
-        if (req.body.deafline != '')
-            task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
-        task.user = user;
-        await task.save()
-            .then(() => console.log("Tarea cargada"))
-            .catch(err => {
-                const mess = (`${err['message']}`)
-            });
-        res.redirect('/')
+    var user = verifyToken.getUser();
+    const task = new Task(req.body)
+    if (req.file != null) {
+        task.img = req.file
+        task.img.path = '/uploads/img/' + req.file.filename;
     }
 
     if (req.body.deafline != '')
         task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
+    task.user = user;
     await task.save()
         .then(() => console.log("Tarea cargada"))
         .catch(err => {
@@ -73,14 +54,13 @@ router.post('/addToList/', async (req, res) => {
 
     const list = await List.findById(req.body.list_id);
     list.state = false;
-    await list.save()
     if (list != null) {
         const task = new Task(req.body)
         if (req.file != null) {
             task.img = req.file
             task.img.path = '/uploads/img/' + req.file.filename;
         }
-        task.listId = list.id;
+        task.list = list;
         if (req.body.deafline != '')
             task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
 
@@ -94,54 +74,66 @@ router.post('/addToList/', async (req, res) => {
 });
 
 //list
-router.post('/addList/', async (req, res) => {
-
+router.post('/addList/', verifyToken, async (req, res) => {
+    var user = verifyToken.getUser();
     const list = new List(req.body)
     list.title = req.body.title;
     list.creationDate = moment(new Date).format('YYYY-MM-DD').toString()
     list.state = false
+    list.user = user;
     await list.save()
-        .then(() => console.log("LISTA cargada"))
+        .then(() => console.log("Lista creada con éxito."))
         .catch(err => {
             const mess = (`${err['message']}`)
         });
-
-    res.redirect('/list/' + list.id)
+    return res.redirect('/list/' + list.id)
 })
 //check list
 
 
 //task
-router.get('/check/:id/:idlist', async (req, res) => {
+router.get('/check/:id/:idlist', verifyToken, async (req, res) => {
     const { id } = req.params;
-    const task1 = await Task.findById(id);
-    const { idlist } = req.params
+    var user = verifyToken.getUser();
+    const task = await Task.findOne({ _id: id, user: user }).catch(showErrors);
+    if (task) {
+        const { idlist } = req.params
 
-    if (!(task1.state)) {
-        task1.state = true
-        const res = moment.utc().format('YYYY-MM-DD HH:mm:ss')
-        task1.resolutionDate = res.toString()
-        await task1.save();
-    }
+        if (!(task.state)) {
+            task.state = true
+            const res = moment.utc().format('YYYY-MM-DD HH:mm:ss')
+            task.resolutionDate = res.toString()
+            await task.save();
+        }
 
-    if (idlist != "nada") {
-        const tasks = await Task.find({ listId: idlist })
-        const list = await List.findById(idlist);
-        res.render('list', { tasks, list })
+        if (idlist != "nada") {
+            const tasks = await Task.find({ listId: idlist })
+            const list = await List.findById(idlist);
+            res.render('list', { tasks, list })
+        }
+        else
+            res.redirect('/');
     }
-    else
-        res.redirect('/');
 })
 
 //list
 
-router.get('/list/:id', async (req, res) => {
+router.get('/list/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    const tasks = await Task.find({ listId: id })
-    const list = await List.findById(id);
-
-    res.render('list', { tasks, list })
+    var user = verifyToken.getUser();
+    var list = await List.findOne({ _id: id, user: user }).catch(showErrors);
+    var tasks = {}
+    if (list) {
+        tasks = await Task.find({ list: list }).catch(showErrors);
+        return res.render('list', { tasks, list })
+    }
+    var message = "List not found."
+    res.render('error', { tasks, list, message })
 })
+
+var showErrors = function (erro) {
+    console.log("Error al obtener un objeto.");
+}
 
 router.get('/checkList/:id/:action', async (req, res) => {
     const { id } = req.params;
@@ -165,29 +157,31 @@ router.get('/checkList/:id/:action', async (req, res) => {
 })
 
 //task
-router.get('/delete/:id/:idlist', async (req, res) => {
+router.get('/delete/:id/:idlist', verifyToken, async (req, res) => {
     const { id } = req.params;
     const { idlist } = req.params;
 
-    await Task.deleteOne({ _id: id })
+    var user = verifyToken.getUser();
+    var task = await Task.findOne({ _id: id, user: user }).catch(showErrors);
+    if (task) {
+        await Task.deleteOne({ _id: id, user: user })
+    }
 
     if (idlist != 'nada') {
-        const list = await List.findById({ _id: idlist });
-        const tasks = await Task.find({ listId: idlist })
-        res.render('list', { tasks, list })
+        const list = await List.findOne({ _id: idlist, user: user }).catch(showErrors);
+        if (list) {
+            return res.redirect('/list/' + list)
+        }
     }
-    else {
-        res.redirect('/')
-    }
+    return res.redirect('/')
 })
 
 //list
-router.get('/deleteList/:id', async (req, res) => {
+router.get('/deleteList/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    await List.deleteOne({ _id: id })
-    await Task.deleteMany({ listId: id })
+    var user = verifyToken.getUser();
+    await List.deleteOne({ _id: id, user: user })
     res.redirect('/')
-
 })
 
 //task
@@ -234,79 +228,36 @@ router.get('/orderByCreationDate/:id', async (req, res) => {
     res.json(tasks)
 })
 
-router.post('/login', verifyToken, async (req, res) => {
+router.post('/login', async (req, res) => {
     const { email, password } = req.body
 
     if (email && password) {
         var user = await User.findOne({ email: email })
         if (user) {
-            if (user.verifyPassword(password)) {
+            if (await user.verifyPassword(password)) {
                 const token = jwt.sign({ id: user._id }, config.secret, {
                     expiresIn: 60 * 60 * 24
                 })
                 console.log(new Date(), ' token creado. ' + token + " user: " + user.name);
 
                 res.cookie('x-access-token', token)
-
-                var tasks = await Task.find({user: user});
-                var list = await List.find({user: user});
-                return res.render('index', { tasks, list })
             }
-            else console.log("Contraseña incorrecta.")
+            else {
+                var message = "Incorrect password."
+                return res.render('login', { message })
+            }
         }
-        else console.log("No se encontró ningún usuario con ese correo.");
-    }
-    else console.log("No hay datos ingresados.")
-    return res.redirect('/login')
-})
-
-router.post('/login', async (req, res) => {
-
-
-    const user = User.find({  })
-    
-
-    const tasks = await Task.find({ listId: "" })
-    const list = await List.find()
-
-    res.setHeader('x-access-token', res.get('x-access-token'))
-
-    console.log(req.headers['x-access-token'])
-
-    res.render('index', { tasks, list })
-})
-
-
-router.post('/register/', async (req, res, next) => {
-    const { email, password, name } = req.body
-    const user = await User.findOne({ email: email })
-    if (!user) {
-        console.log("Este usuario ya se encuentra registrado.")
+        else {
+            var message = "No user was found with that email."
+            return res.render('login', { message })
+        }
     }
     else {
-        user = new User({
-            name,
-            email,
-            password
-        })
-        
-
-        user.password = await user.encryptPassword(user.password)
-        console.log(user)
-        await user.save()
-        const token = jwt.sign({ id: user._id }, config.secret, {
-            expiresIn: 60 * 60 * 24
-        })
-     
-        res.set('x-access-token', token)
-        res.render('login', { auth: true, token })
+        var message = "You must enter an email and a password."
+        return res.render('login', { message })
     }
-
-
-
+    return res.redirect('/')
 })
-
-
 
 router.post('/register/', async (req, res, next) => {
     const { email, password, name } = req.body
@@ -327,12 +278,14 @@ router.post('/register/', async (req, res, next) => {
             expiresIn: 60 * 60 * 24
         })
 
-        res.set('x-access-token', token)
         res.redirect('/login')
     }
+})
 
-
-
+router.get('/logout/', verifyToken, async (req, res) => {
+    var user = verifyToken.getUser();
+    res.clearCookie('x-access-token')
+    return res.redirect('/');
 })
 
 

@@ -42,11 +42,9 @@ const TaskSchema = new Schema({
         originalname: { type: String },
         mimetype: { type: String }
     },
-    listId:
-    {
-     type: String, default: ""
-    },
-    user:{type: Schema.Types.ObjectId, ref: 'User'}
+    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    list: { type: Schema.Types.ObjectId, default: null, ref: 'listTasks' }
+
 });
 
 module.exports = mongoose.model('tasks', TaskSchema)

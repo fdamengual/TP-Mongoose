@@ -1,4 +1,5 @@
 <%- include('_mostrar_editar'); %>
+<%- include('_logout_modal'); %>
 
 <nav class="navbar navbar-dark bg-dark mb-4">
     <form class="form-inline">
@@ -7,7 +8,7 @@
                 <i class="fas fa-home mr-2 fa-2x" style="color: white;"></i>Home</a>
         </div>
 
-        <div data-toggle="modal" data-target="#exampleModal">
+        <div data-toggle="modal" data-target="#TaskModal">
             <a href="javascript:void(0);" class="pr-5 text-white bg-dark" onclick="mostrar_nuevo()">
                 <i class="fas fa-plus-square mr-2  fa-2x " style="color:#FFFFFF;"></i>Add Task</a>
         </div>
@@ -16,12 +17,10 @@
             <a href="javascript:void(0);" class="pr-5 text-white bg-dark" onclick="m('addList')">
                 <i class="fas fa-tasks mr-2 fa-2x" style="color: white;"></i>Add List</a>
         </div>
-
-
     
     </form>
-    <div data-toggle="modal" data-target="#modalSession">
-        <a href="javascript:void(0);" class="text-white bg-dark" onclick="m('addList')">
+    <div data-toggle="modal" data-target="#SignOutModal">
+        <a href="javascript:void(0);" class="text-white bg-dark">
             <i class="fas fa-sign-out-alt mr-2 fa-2x " style="color: white;"></i>Logout</a>
         </div>
 </nav>
@@ -54,14 +53,18 @@
 
 <script>
 
-    $('#cancel').click(function () {
-
-        $('#modalList').modal('hide')
+    $(".modal").on('show.bs.modal', function (event)
+    {
+        var modal = $(this);
+        modal.find(".cancel-btn").click(function()
+        {
+            modal.modal('hide');
+        })
     })
-
-    $('#cancelTask').click(function () {
-        $('#exampleModal').modal('hide')
-    })
-
     
+    $("#signout-btn").click(function ()
+    {
+        window.location.replace("/logout")
+    })
+
 </script>

@@ -1,20 +1,18 @@
 <%- include('partials/_header'); %>
-
-
 <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="LoginModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="LoginModalLabel">Login</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
-            <div class="modal-body">
-             
+            <div class="modal-body">            
                 <form action="/login" method="POST" id="submit" enctype="multipart/form-data">
-
+                    <% if (message) { %>
+                    <div class="alert alert-danger" role="alert">
+                        <%= message%>
+                      </div>
+                    <% } %>
                     <!--title-->
                     <div class="form-goup m-2" id="idEmail">
                         <h6>Email <span class="label label-default"></span></h6>
@@ -40,6 +38,6 @@
     </div>
 </div>
 <script>
-$('#LoginModal').modal('toggle')
+$('#LoginModal').modal({ backdrop: 'static', keyboard: false })
 </script>
 <%- include('partials/_footer'); %>
