@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const path = require('path')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
-const router = require(path.resolve(__dirname + '\\..\\', 'routes'))
+const router = require(path.resolve(__dirname + "/src/routes"))
 const multer = require('multer')
 const uuid = require('uuid');
 const cookieParser = require('cookie-parser');
@@ -35,16 +35,16 @@ mongoose.connect('mongodb://localhost/tp6',{
 
 //settings
 app.set('port', process.env.PORT || 3000);
-app.set('views', path.resolve(__dirname + '\\..\\public', 'views'));
+app.set('views', path.resolve(__dirname + '/src/public/views'));
 app.set('view engine', 'ejs');
 
-app.use('/uploads/img', express.static(path.join(__dirname, '/../uploads/img')));
+app.use('/uploads/img', express.static(path.join(__dirname, '/src/uploads/img')));
 
 //middleware
 app.use(morgan('dev'));
 app.use(express.urlencoded({}))
 const storage = multer.diskStorage({
-    destination :path.join(__dirname + '/../uploads/img'),
+    destination :path.join(__dirname + '/src/uploads/img'),
     filename: (req, file, cb, filename) => {
        cb(null, uuid.v4() + path.extname(file.originalname));
      
