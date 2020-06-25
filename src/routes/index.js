@@ -11,13 +11,13 @@ const List = require('../models/tasksList')
 const User = require('../models/user');
 
 
-
 router.get('/', verifyToken, async (req, res) => {
     var user = verifyToken.getUser();
-    var tasks = await Task.find({ user: user }).catch(showErrors);
-    var list = await List.find({ user: user }).catch(showErrors);
+    var tasks = await Task.find({ user, list : null }).catch(showErrors);
+    var list = await List.find({ user }).catch(showErrors);
 
-    return res.render('index', { tasks, list })
+    res.render('index', { tasks, list })
+    return;
 });
 
 
@@ -75,7 +75,7 @@ router.post('/addToList/', async (req, res) => {
 
 //list
 router.post('/addList/', verifyToken, async (req, res) => {
-    var user = verifyToken.getUser();
+    var user = await verifyToken.getUser();
     const list = new List(req.body)
     list.title = req.body.title;
     list.creationDate = moment(new Date).format('YYYY-MM-DD').toString()
@@ -86,7 +86,7 @@ router.post('/addList/', verifyToken, async (req, res) => {
         .catch(err => {
             const mess = (`${err['message']}`)
         });
-    return res.redirect('/list/' + list.id)
+    res.redirect('/list/' + list.id)
 })
 //check list
 
@@ -95,37 +95,40 @@ router.post('/addList/', verifyToken, async (req, res) => {
 router.get('/check/:id/:idlist', verifyToken, async (req, res) => {
     const { id } = req.params;
     var user = verifyToken.getUser();
-    const task = await Task.findOne({ _id: id, user: user }).catch(showErrors);
+    const task = await Task.findOne({ _id: id, user }).catch(showErrors);
     if (task) {
         const { idlist } = req.params
 
-        if (!(task.state)) {
-            task.state = true
-            const res = moment.utc().format('YYYY-MM-DD HH:mm:ss')
-            task.resolutionDate = res.toString()
-            await task.save();
-        }
-
         if (idlist != "nada") {
-            const tasks = await Task.find({ listId: idlist })
-            const list = await List.findById(idlist);
-            res.render('list', { tasks, list })
+            const tasks = await Task.find({ listId: idlist, user })
+            var list = await List.findOne({ idlist, user });
+            res.redirect('/list/' + list.id);
         }
-        else
-            res.redirect('/');
+        else {
+            if (!(task.state)) {
+                task.state = true
+                task.user = user;
+                const res = moment.utc().format('YYYY-MM-DD HH:mm:ss')
+                task.resolutionDate = res.toString()
+                await task.save();
+                res.redirect('/');
+            }
+        }
     }
+    res.redirect('/');
 })
 
 //list
 
 router.get('/list/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    var user = verifyToken.getUser();
-    var list = await List.findOne({ _id: id, user: user }).catch(showErrors);
+    var user = await verifyToken.getUser();
+    var list = await List.findOne({ _id: id, user }).catch(showErrors);
     var tasks = {}
     if (list) {
         tasks = await Task.find({ list: list }).catch(showErrors);
-        return res.render('list', { tasks, list })
+        res.render('list', { tasks, list })
+        return;
     }
     var message = "List not found."
     res.render('error', { tasks, list, message })
@@ -160,27 +163,28 @@ router.get('/checkList/:id/:action', async (req, res) => {
 router.get('/delete/:id/:idlist', verifyToken, async (req, res) => {
     const { id } = req.params;
     const { idlist } = req.params;
-
-    var user = verifyToken.getUser();
-    var task = await Task.findOne({ _id: id, user: user }).catch(showErrors);
+    var user = await verifyToken.getUser();
+    var task = await Task.findOne({ _id: id, user }).catch(showErrors);
     if (task) {
-        await Task.deleteOne({ _id: id, user: user })
+        await Task.deleteOne({ _id: id })
     }
 
     if (idlist != 'nada') {
-        const list = await List.findOne({ _id: idlist, user: user }).catch(showErrors);
+        const list = await List.findOne({ _id: idlist}).catch(showErrors);
         if (list) {
-            return res.redirect('/list/' + list)
+            res.redirect('/list/' + list.id)
+            return;
         }
     }
-    return res.redirect('/')
+    res.redirect('/')
+    return;
 })
 
 //list
 router.get('/deleteList/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     var user = verifyToken.getUser();
-    await List.deleteOne({ _id: id, user: user })
+    await List.deleteOne({ _id: id, user })
     res.redirect('/')
 })
 
@@ -195,16 +199,22 @@ router.get('/traerTask/:id', async (req, res) => {
 })
 
 //task
-router.post('/editTask/:id', async (req, res, next) => {
+router.post('/editTask/:id', async (req, res) => {
     const { id } = req.params;
 
     const task = await Task.findById(id);
-    const resolutionDat = moment.utc().format('YYYY-MM-DD HH:mm:ss').toString()
-    await Task.update({ _id: id }, req.body);
+    if(task != null)
+    {
+        task.deafline = req.body.deafline;
+        task.title = req.body.title;
+        task.preority = req.body.preority;
+        task.description = req.body.description;   
+    }
+    await task.updateOne(task.id);
     res.redirect('/');
 })
 
-router.post('/editTaskList/:id', async (req, res, next) => {
+router.post('/editTaskList/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
 
     const list = await List.findById(req.body.list_id);
@@ -212,9 +222,12 @@ router.post('/editTaskList/:id', async (req, res, next) => {
         const task = await Task.findById(id);
         if (task != null) {
             const resolutionDat = moment.utc().format('YYYY-MM-DD HH:mm:ss').toString()
-            await Task.update({ _id: id }, req.body);
 
-           
+            task.deafline = req.body.deafline;
+            task.title = req.body.title;
+            task.preority = req.body.preority;
+            task.description = req.body.description;   
+            await task.updateOne(task.id);
             res.redirect('/list/' + list.id);
         }
     }
@@ -244,19 +257,23 @@ router.post('/login', async (req, res) => {
             }
             else {
                 var message = "Incorrect password."
-                return res.render('login', { message })
+                res.render('login', { message })
+                return;
             }
         }
         else {
             var message = "No user was found with that email."
-            return res.render('login', { message })
+            res.render('login', { message })
+            return;
         }
     }
     else {
         var message = "You must enter an email and a password."
-        return res.render('login', { message })
+        res.render('login', { message })
+        return;
     }
-    return res.redirect('/')
+    res.redirect('/')
+    return;
 })
 
 router.post('/register/', async (req, res, next) => {
