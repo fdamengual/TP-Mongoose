@@ -1,7 +1,5 @@
 <%- include('partials/_header'); %>
-
-
-
+<%- include('partials/_navBar'); %>
 
 <div class="container ">
     <div>
@@ -182,12 +180,11 @@
     function mostrar_editar(id) {
 
         this.id = id;
-        $('#exampleModal').modal('toggle')
+        $('#TaskModal').modal('toggle')
         $.ajax({
             url: '/traerTask/' + id,
             method: 'GET',
             success: function (task) {
-
                 var tarea = task[0]
                 $('#titleM').val(tarea.title)
                 $('#descriptionM').val(tarea.description)
@@ -209,8 +206,6 @@
                 else {
                     $('#MImg').attr('src', "")
                 }
-
-
             }
         })
 

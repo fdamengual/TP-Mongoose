@@ -1,0 +1,53 @@
+<%- include('partials/_header'); %>
+
+<div class="modal fade" id="ModelRegister" tabindex="-1" role="dialog" aria-labelledby="ModelRegisterLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModelRegisterLabel">Register User</h5>
+            </div>
+            <div class="modal-body">
+                <form action="/register" method="POST" id="submitM" enctype="multipart/form-data">
+                    <!--name-->
+                    <div class="form-goup m-2" id="idTitle">
+                        <h6>Name <span class="label label-default"></span></h6>
+                        <input type="text" name="name" id="name" placeholder="Insert name" required
+                            class="form-control" value="">
+                    </div>
+                    
+                    <!--email-->
+                    <div class="form-goup m-2" id="idTitle">
+                        <h6>Email <span class="label label-default"></span></h6>
+                        <input type="email" name="email" id="email" placeholder="Insert email adress" required
+                            class="form-control" value="">
+                    </div>
+                    <!--password-->
+                    <div class="form-goup m-2" id="idPassword">
+                        <h6>Password <span class="label label-default"></span></h6>
+                        <input type="password" name="password" id="password" placeholder="Insert a password" required
+                            class="form-control" value="">
+                    </div>
+                       <!--passwordrepeat-->
+                       <div class="form-goup m-2" id="idPasswordRepeat">
+                        <h6>Repeat Password <span class="label label-default"></span></h6>
+                        <input type="password" name="passwordrepeat" id="passwordrepeat" placeholder="Confirm password" required
+                            class="form-control" value="">
+                    </div>
+                    <!--button-->
+                    <div class="modal-footer">
+ 
+                        <button type="submit" class="btn btn-success btn-block m-2" id="Register">Register</button>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$('#ModelRegister').modal({ backdrop: 'static', keyboard: false })
+
+    
+</script>
+<%- include('partials/_footer'); %>
