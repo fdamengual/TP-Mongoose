@@ -5,7 +5,7 @@
   "author": "Gomez-Lucia",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon src/controllers/app.js"
+    "start": "nodemon app.js"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -20,6 +20,8 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "multiparty": "^4.1.0",
-    "uuid": "^8.1.0"
+    "passport": "^0.4.1",
+    "passport-google-oauth20": "^2.0.0",
+    "uuid": "^8.2.0"
   }
 }
