@@ -209,6 +209,7 @@ router.post('/editTask/:id', async (req, res) => {
         task.title = req.body.title;
         task.preority = req.body.preority;
         task.description = req.body.description;   
+        task.save();
     }
     await task.updateOne(task.id);
     res.redirect('/');
@@ -227,7 +228,7 @@ router.post('/editTaskList/:id', verifyToken, async (req, res) => {
             task.title = req.body.title;
             task.preority = req.body.preority;
             task.description = req.body.description;   
-            await task.updateOne(task.id);
+            task.save();
             res.redirect('/list/' + list.id);
         }
     }
