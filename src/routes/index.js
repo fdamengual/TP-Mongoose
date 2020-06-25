@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment')
-
+const jwt = require('jsonwebtoken')
+const config = require('../models/config')
+const verifyToken = require('../middleware/verifyToken')
 let taskShow = null;
-const list=null;
+const list = null;
 const Task = require('../models/tasks')
 const List = require('../models/tasksList')
 const User = require('../models/user');
@@ -262,6 +264,7 @@ router.post('/register/', async (req, res, next) => {
     var user = await User.findOne({ email: email })
     if (user) {
         console.log("Este usuario ya se encuentra registrado.")
+        res.send("ya estás registrado")
     }
     else {
         user = new User({

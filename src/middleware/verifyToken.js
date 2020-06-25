@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const config = require('../models/congif')
+const config = require('../models/config')
 const cookieParser = require("cookie-parser");
 const User = require('../models/user')
 const Task = require('../models/tasks')
