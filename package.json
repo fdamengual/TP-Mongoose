@@ -5,7 +5,7 @@
   "author": "Gomez-Lucia",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon /app.js"
+    "start": "nodemon app.js"
   },
   "dependencies": {
     "@google-cloud/debug-agent": "^5.1.0",
