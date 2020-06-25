@@ -199,9 +199,10 @@ router.get('/traerTask/:id', async (req, res) => {
 })
 
 //task
-router.post('/editTask/:id', async (req, res) => {
+router.post('/editTask/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
 
+    var user = verifyToken.getUser();
     const task = await Task.findById(id);
     if(task != null)
     {
@@ -209,6 +210,7 @@ router.post('/editTask/:id', async (req, res) => {
         task.title = req.body.title;
         task.preority = req.body.preority;
         task.description = req.body.description;   
+        task.user = user;
         task.save();
     }
     await task.updateOne(task.id);
