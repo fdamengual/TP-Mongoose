@@ -7,7 +7,20 @@ const router = require(path.resolve(__dirname + '\\..\\', 'routes'))
 const multer = require('multer')
 const uuid = require('uuid');
 const cookieParser = require('cookie-parser');
-require('@google-cloud/debug-agent').start();
+
+require('@google-cloud/debug-agent').start(
+{
+    serviceContext: 
+    {
+    
+        service: 'laboratorio-iv-281323',
+        version: '1'
+        
+    }
+}
+
+
+);
 
 const app = express();
 
