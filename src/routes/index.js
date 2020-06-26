@@ -31,7 +31,7 @@ router.get('/register', (req, res) => {
 
 //task
 router.post('/add', verifyToken, async (req, res) => {
-    var user = verifyToken.getUser();
+    var verify_user = await verifyToken.getUser();var verify_user = await verifyToken.getUser();
     const task = new Task(req.body)
     if (req.file != null) {
         task.img = req.file
@@ -40,7 +40,7 @@ router.post('/add', verifyToken, async (req, res) => {
 
     if (req.body.deafline != '')
         task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
-    task.user = user;
+    task.user = verify_user;
     await task.save()
         .then(() => console.log("Tarea cargada"))
         .catch(err => {
@@ -51,7 +51,7 @@ router.post('/add', verifyToken, async (req, res) => {
 
 //A task in a list.
 router.post('/addToList/', async (req, res) => {
-
+    var verify_user = await verifyToken.getUser();
     const list = await List.findById(req.body.list_id);
     list.state = false;
     if (list != null) {
@@ -61,6 +61,8 @@ router.post('/addToList/', async (req, res) => {
             task.img.path = '/uploads/img/' + req.file.filename;
         }
         task.list = list;
+        task.user = verify_user;
+
         if (req.body.deafline != '')
             task.deafline = moment(task.deafline).format('YYYY-MM-DD').toString()
 
@@ -94,28 +96,35 @@ router.post('/addList/', verifyToken, async (req, res) => {
 //task
 router.get('/check/:id/:idlist', verifyToken, async (req, res) => {
     const { id } = req.params;
-    var user = verifyToken.getUser();
-    const task = await Task.findOne({ _id: id, user }).catch(showErrors);
+    var verify_user = verifyToken.getUser();
+    var task = await Task.findOne({ _id: id, user: verify_user }).catch(showErrors);
+    
     if (task) {
         const { idlist } = req.params
-
-        if (idlist != "nada") {
-            const tasks = await Task.find({ listId: idlist, user })
-            var list = await List.findOne({ idlist, user });
-            res.redirect('/list/' + list.id);
+        if (!(task.state)) {
+            task.state = true
+            task.user = verify_user;
+            const res = moment.utc().format('YYYY-MM-DD HH:mm:ss')
+            task.resolutionDate = res.toString()
+            await task.save();
         }
-        else {
-            if (!(task.state)) {
-                task.state = true
-                task.user = user;
-                const res = moment.utc().format('YYYY-MM-DD HH:mm:ss')
-                task.resolutionDate = res.toString()
-                await task.save();
+        if (idlist != "nada") 
+        {
+            var list = await List.findOne({ _id: idlist, user: verify_user}).catch(showErrors);
+            if(list != null) res.redirect('/list/' + list.id);        
+            else
+            {
                 res.redirect('/');
+                return;
             }
         }
+        else 
+        {
+            res.redirect('/');                    
+            return;
+        }
     }
-    res.redirect('/');
+    else res.redirect('/');
 })
 
 //list
@@ -166,12 +175,13 @@ router.get('/delete/:id/:idlist', verifyToken, async (req, res) => {
     var user = await verifyToken.getUser();
     var task = await Task.findOne({ _id: id, user }).catch(showErrors);
     if (task) {
-        await Task.deleteOne({ _id: id })
+        await Task.deleteOne({ _id: id, user })
     }
 
     if (idlist != 'nada') {
-        const list = await List.findOne({ _id: idlist}).catch(showErrors);
+        const list = await List.findOne({ _id: idlist, user}).catch(showErrors);
         if (list) {
+            await Task.deleteOne({ _id: id })
             res.redirect('/list/' + list.id)
             return;
         }
@@ -183,8 +193,14 @@ router.get('/delete/:id/:idlist', verifyToken, async (req, res) => {
 //list
 router.get('/deleteList/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    var user = verifyToken.getUser();
-    await List.deleteOne({ _id: id, user })
+    var verify_user = verifyToken.getUser();
+    var list_linked = await List.find({ _id: id, user: verify_user}).catch(showErrors);
+    if(list_linked)
+    {
+        await List.deleteOne({ _id: id, user: verify_user })
+        await Task.deleteMany({ list: list_linked, user: verify_user })
+    }
+    
     res.redirect('/')
 })
 
