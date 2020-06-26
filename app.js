@@ -38,7 +38,7 @@ app.use(passport.initialize())
 // Api call for google authenticationapp.get('/',
 passport.authenticate('google', { scope: ['email', 'profile'] }), (req, res) => { };
 // Api call back function
-app.get('/callback', passport.authenticate('google', { scope: ['email', 'profile'] }),
+app.get('/authenticate', passport.authenticate('google', { scope: ['email', 'profile'] }),
     (req, res) => {
         return res.send("Congrats");
     });

@@ -85,46 +85,62 @@
                         <th data-toggle="tooltip" data-placement="top" title="Ordenar por numero">N°</th>
                         <th data-toggle="tooltip" data-placement="top" title="Ordenar por titulo">Title</th>
                         <th data-toggle="tooltip" data-placement="top" title="Ordenar por prioridad">Priority</th>
-                        <th data-toggle="tooltip" data-placement="top" title="Ordenar por fecha de creacion">CreationDate
-                                 
+                        <th data-toggle="tooltip" data-placement="top" title="Ordenar por fecha de creacion">
+                            CreationDate
+
                         </th>
-                        <th data-toggle="tooltip" data-placement="top" title="Ordenar por fecha de conclusion">Deafline</th>
-                        <th >Action</th>
+                        <th data-toggle="tooltip" data-placement="top" title="Ordenar por fecha de conclusion">Deafline
+                        </th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <%var cont = 1%>
                     <%for(var i=0; i < tasks.length; i++ ) { %>
                     <%cont ++%>
-                    <tr class="<%= tasks[i].preority==0 ? 'table-success':tasks[i].preority==1 ?'table-warning':'table-danger'%>">
-                      <td><a data-toggle="tooltip" data-placement="top" title="Marcar tarea como concluida" style="z-index:2;position:absolute;opacity:0;" href="/check/<%= tasks[i].id%>/nada" name='viene de list'>aa</a>
-                        <input type="checkbox" <%= tasks[i].state ? checked="checked"  : false  %> ></td>
-                      <td><%= i + 1  %></td>
-                      <td><%= tasks[i].title  %></td>
-                      <td style="text-align: center;"> <label for="" style="opacity: 0; position: absolute;"> <%= tasks[i].preority==0 ? '0':tasks[i].preority==1 ?'1':'2'%> </label><%= tasks[i].preority==0 ? 'Baja':tasks[i].preority==1 ?'Media':'Alta'%>  </td>
-                      <td>
-                        <%= tasks[i].creationDate.getFullYear()%>-<%= tasks[i].creationDate.getMonth()+1%>-<%=tasks[i].creationDate.getDate()%>
-                      </td>
-                      <td> <% if(tasks[i].deafline != undefined) {%>
-                        <%= tasks[i].deafline%>
-                        <%}%>
+                    <tr
+                        class="<%= tasks[i].preority==0 ? 'table-success':tasks[i].preority==1 ?'table-warning':'table-danger'%>">
+                        <td>
+                            <div style="display: none;"><%= tasks[i].state %></div>
+                            <input class="form-check w-100 p-3" type="checkbox"
+                                onchange="window.location.href='/check/<%= tasks[i].id %>/nada'"
+                                <%= tasks[i].state ? checked='checked' : false %>
+                                <%= tasks[i].state ? disabled='disabled' : false %>>
+                        </td>
+                        </td>
+                        <td><%= i + 1  %></td>
+                        <td><%= tasks[i].title  %></td>
+                        <td style="text-align: center;"> <label for="" style="opacity: 0; position: absolute;">
+                                <%= tasks[i].preority==0 ? '0':tasks[i].preority==1 ?'1':'2'%>
+                            </label><%= tasks[i].preority==0 ? 'Baja':tasks[i].preority==1 ?'Media':'Alta'%> </td>
+                        <td>
+                            <%= tasks[i].creationDate.getFullYear()%>-<%= tasks[i].creationDate.getMonth()+1%>-<%=tasks[i].creationDate.getDate()%>
+                        </td>
+                        <td> <% if(tasks[i].deafline != undefined) {%>
+                            <%= tasks[i].deafline%>
+                            <%}%>
                       </td>
                       </td>
                       <td>
                           <div class="text-center">
-                          <a href="/delete/<%= tasks[i].id%>/nada" class="far fa-trash-alt" data-toggle="tooltip" data-placement="top" title="Eliminar"></a>
-                        <% if(tasks[i].state == true){%>
-                        <a class="fas fa-edit" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Editar" style="color:rgb(180, 176, 176);"></a>
-                        <%} else{%>
-                        <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="Editar" class="fas fa-edit" onclick="mostrar_editar('<%= tasks[i].id%>')"></a>
-                        <% } %>
-                        <% } %>
+                          <a href="/delete/<%= tasks[i].id%>/nada" class="far fa-trash-alt" data-toggle="tooltip"
+                            data-placement="top" title="Eliminar"></a>
+                            <% if(tasks[i].state == true){%>
+                            <a class="fas fa-edit" disabled="disabled" data-toggle="tooltip" data-placement="top"
+                                title="Editar" style="color:rgb(180, 176, 176);"></a>
+                            <%} else{%>
+                            <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="Editar"
+                                class="fas fa-edit" onclick="mostrar_editar('<%= tasks[i].id%>')"></a>
+                            <% } %>
+                            <% } %>
                             <!--LISTAS-->
                             <%for(var i=0; i < list.length; i++ ) { %>
                     <tr>
-                        <td><a data-toggle="tooltip" data-placement="top" title="Marcar lista como terminada " style="z-index:2;position:absolute;opacity:0;" href="/checkList/<%= list[i].id%>/home">aa</a>
-                            <input type="checkbox" <%= list[i].state ? checked="checked" : false %>></td>
-
+                        <td>       
+                            <input class="form-check w-100 p-3" type="checkbox" onchange ="window.location.href='/checkList/<%= list[i].id%>/home'"
+                                <%= list[i].state ? checked="checked" : false %>
+                                <%= list[i].state ? disabled="disabled" : false %> >
+                        </td>
                         <th><%= cont %></td>
                             <%cont ++%>
                         <td><%= list[i].title  %></td>
@@ -136,12 +152,15 @@
                         <td>
                             <div class="text-center">
                                 <% if(list[i].task == null){%>
-                                <a href="/deleteList/<%= list[i].id%>" class="far fa-trash-alt"data-toggle="tooltip" data-placement="top" title="Eliminar"></a>
+                                <a href="/deleteList/<%= list[i].id%>" class="far fa-trash-alt" data-toggle="tooltip"
+                                    data-placement="top" title="Eliminar"></a>
                                 <%} else{%>
-                                <a class="far fa-trash-alt" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Editar" style="color:rgb(180, 176, 176);"></a>
+                                <a class="far fa-trash-alt" disabled="disabled" data-toggle="tooltip"
+                                    data-placement="top" title="Editar" style="color:rgb(180, 176, 176);"></a>
                                 <% } %>
 
-                                <a href="/list/<%= list[i].id %>"data-toggle="tooltip" data-placement="top" title="Ver más..."><i class="fas fa-ellipsis-h"></i></a>
+                                <a href="/list/<%= list[i].id %>" data-toggle="tooltip" data-placement="top"
+                                    title="Ver más..."><i class="fas fa-ellipsis-h"></i></a>
                                 <% } %>
                 </tbody>
             </table>
@@ -157,15 +176,14 @@
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
-    $(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();   
-});
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
     var id;
-    $(document).ready(function() 
-    { 
-        $("#table").tablesorter(); 
-    } 
-);
+    $(document).ready(function () {
+        $("#table").tablesorter();
+    }
+    );
     function mostrar_nuevo() {
         $('#submitM').attr('action', '/add/')
         $('#titleM').val("")
